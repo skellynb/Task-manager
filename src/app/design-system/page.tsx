@@ -3,6 +3,7 @@
 import { PageWrapper } from "../components/layouts/PageWrapper";
 import Swatch from "./components/swatch";
 import { Button } from "../components/ui/buttons";
+import { ListChecks } from "lucide-react";
 
 import {
   Body1,
@@ -83,18 +84,23 @@ export default function DesignSystemPage() {
             <Button variant="secondary">Secondary</Button>
           </div>
           <Body1 className="mb-3 font-bold">Button Size Variants</Body1>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <Button size="sm">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">Large</Button>
-          </div>
+         <div className="flex flex-wrap gap-4 mb-6">
+  <Button size="sm">Small</Button>
+  <Button size="default">Default</Button>
+  <Button size="lg">Large</Button>
+
+  <Button size="icon" variant="secondary">
+    <ListChecks className="h-4 w-4" />
+  </Button>
+</div>
+
           <Body1 className="mb-3 font-bold">Link</Body1>
           <a
-  href="#"
-  className="text-primary hover:text-primary-hover underline-offset-4 hover:underline"
->
-  Example Link
-</a>
+        href="#"
+        className="text-primary hover:text-primary-hover underline-offset-4 hover:underline"
+       >
+      Example Link
+       </a>
 
           
         </section>
