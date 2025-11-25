@@ -2,7 +2,7 @@
 
 import { PageWrapper } from "../components/layouts/PageWrapper";
 import Swatch from "./components/swatch";
-import { Button } from "../components/ui/buttons";
+import { Button } from "../../components/ui/buttons";
 import { ListChecks } from "lucide-react";
 
 import {
