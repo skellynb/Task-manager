@@ -3,7 +3,7 @@ export type Task = {
   title: string;
   description: string;
   completed: boolean;
-  dueDate: string;      // ISO date string, e.g., "2025-11-26"
+  dueDate: string;   
   priority: "Low" | "Medium" | "High";
-  category: string;     // e.g., "Work", "Personal", "Study"
+  category: string;   
 };

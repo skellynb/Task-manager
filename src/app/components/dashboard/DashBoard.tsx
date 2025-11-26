@@ -42,36 +42,36 @@ export function DashboardClient() {
   const pendingTasks = totalTasks - completedTasks;
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
-      <Sidebar />
+  <div className="flex flex-col md:flex-row min-h-screen">
+    <Sidebar />
 
-      <main className="flex-1 p-6 md:p-10">
-        <Headline className="text-2xl font-semibold mb-6 text-white">
-          Welcome, {username}!
-        </Headline>
+    <main className="flex-1 p-4 sm:p-6 md:p-10">
+      <Headline className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-white">
+        Welcome, {username}!
+      </Headline>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-          <StatCard title="Total Tasks" value={totalTasks} />
-          <StatCard title="Completed Tasks" value={completedTasks} />
-          <StatCard title="Pending Tasks" value={pendingTasks} />
-        </div>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <StatCard title="Total Tasks" value={totalTasks} />
+        <StatCard title="Completed Tasks" value={completedTasks} />
+        <StatCard title="Pending Tasks" value={pendingTasks} />
+      </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/tasks" passHref>
-            <Button className="flex justify-center sm:justify-start w-full sm:w-auto">
-              View All Tasks
-            </Button>
-          </Link>
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <Link href="/tasks" passHref>
+          <Button className="flex justify-center items-center w-full sm:w-auto px-4 py-2 text-sm sm:text-base">
+            View All Tasks
+          </Button>
+        </Link>
 
-          <Link href="/tasks/new" passHref>
-            <Button className="flex justify-center sm:justify-start w-full sm:w-auto">
-              Create New Task
-            </Button>
-          </Link>
-        </div>
-      </main>
-    </div>
-  );
+        <Link href="/tasks/new" passHref>
+          <Button className="flex justify-center items-center w-full sm:w-auto px-4 py-2 text-sm sm:text-base">
+            Create New Task
+          </Button>
+        </Link>
+      </div>
+    </main>
+  </div>
+);
 }
