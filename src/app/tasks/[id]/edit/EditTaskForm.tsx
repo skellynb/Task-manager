@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Card, CardHeader, CardFooter, CardTitle,
+  CardContent, } from "@/src/components/ui/card";
+import { Label, Headline } from "@/src/app/components/typography";
+import { Button } from "@/src/components/ui/buttons";
+import Link from "next/link";
+
+
 
 type Task = {
   id: string;
@@ -63,40 +70,57 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
   }
 
   return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/tasks" passHref>
+          <Button className="flex items-center gap-2">
+            <span className="text-lg font-semibold">&#8592;</span>
+            <span>Back to Tasks</span>
+          </Button>
+        </Link>
+
+        <Headline className="text-2xl font-bold">Edit Task</Headline>
+      </div>
+      <div className="min-h-screen flex justify-center items-center px-4">
+    <Card className="max-w-md w-full">
+      <CardHeader>
+    <CardTitle>Edit Task</CardTitle>
+  </CardHeader>
+  <CardContent>
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
       <div>
-        <label className="block mb-1">Task Title</label>
+        <Label className="block mb-1">Task Title</Label>
         <input
           type="text"
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block mb-1">Description</label>
+        <Label className="block mb-1">Description</Label>
         <textarea
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block mb-1">Due Date</label>
+        <Label className="block mb-1">Due Date</Label>
         <input
           type="date"
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.dueDate}
           onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block mb-1">Priority</label>
+        <Label className="block mb-1">Priority</Label>
         <select
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.priority}
           onChange={(e) =>
             setForm({ ...form, priority: e.target.value as "Low" | "Medium" | "High" })
@@ -109,9 +133,9 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
       </div>
 
       <div>
-        <label className="block mb-1">Category</label>
+        <Label className="block mb-1">Category</Label>
         <select
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.category}
           onChange={(e) =>
             setForm({ ...form, category: e.target.value as "Work" | "Personal" | "Study" })
@@ -123,9 +147,16 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
         </select>
       </div>
 
-      <button className="bg-blue-600 text-white px-4 py-2 rounded">
+       <CardFooter className="flex justify-center">  
+      <Button>
         Save Changes
-      </button>
+      </Button>
+      </CardFooter>
     </form>
+    </CardContent>
+    </Card>
+    </div>
+    </div>
+    
   );
 }

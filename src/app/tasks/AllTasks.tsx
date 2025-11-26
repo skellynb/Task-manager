@@ -145,13 +145,15 @@ export default function AllTasks() {
         <ul className="space-y-3">
           {filteredTasks.map((task) => (
             <li key={task.id} className="list-none">
-              <Card className="p-4 flex flex-col gap-2 shadow-sm">
+              <Card className="p-4 flex flex-col gap-2 shadow-sm w-full max-w-md">
+
 
                 <Label className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     checked={task.completed}
                     onChange={() => toggleCompleted(task.id)}
+                    className="w-5 h-5"
                   />
                   <Subheading1>
                   <span
@@ -192,7 +194,7 @@ export default function AllTasks() {
 
                   <button
                     onClick={() => handleDelete(task.id)}
-                    className="text-red-600 underline"
+                    className="text-[#3D3D47] underline cursor-pointer"
                   >
                     Delete
                   </button>

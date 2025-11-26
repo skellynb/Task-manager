@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Task } from "@/src/types/task";
 import { saveTaskToLocalStorage } from "@/src/lib/localStorage";
+import { Card, CardHeader, CardFooter, CardTitle,
+  CardContent, } from "@/src/components/ui/card";
+import { Label, Headline } from "../../components/typography";
+import { Button } from "@/src/components/ui/buttons";
+import Link from "next/link";
+
 
 export default function CreateTaskForm() {
   const router = useRouter();
@@ -50,12 +56,31 @@ export default function CreateTaskForm() {
   }
 
   return (
+    
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/dashboard" passHref>
+          <Button className="flex items-center gap-2">
+            <span className="text-lg font-semibold">&#8592;</span>
+            <span>Back to Dashboard</span>
+          </Button>
+        </Link>
+
+        <Headline className="text-2xl font-bold">Create Task</Headline>
+      </div>
+      
+      <div className="min-h-screen flex justify-center items-center px-4">
+    <Card className="max-w-md w-full">
+      <CardHeader>
+    <CardTitle>Create New Task</CardTitle>
+  </CardHeader>
+       <CardContent>
     <form className="space-y-4 max-w-md">
       <div>
-        <label className="block mb-1">Task Title</label>
+        <Label className="block mb-1">Task Title</Label>
         <input
           type="text"
-          className="w-full border p-2 rounded"
+          className="w-full border border-4 border-[#645fc6] p-2 rounded"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
@@ -63,28 +88,28 @@ export default function CreateTaskForm() {
       </div>
 
       <div>
-        <label className="block mb-1">Description</label>
+        <Label className="block mb-1">Description</Label>
         <textarea
-          className="w-full border p-2 rounded"
+        className="w-full rounded border border-4 border-[#645fc6] p-2"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block mb-1">Due Date</label>
+        <Label className="block mb-1">Due Date</Label>
         <input
           type="date"
-          className="w-full border p-2 rounded"
+         className="w-full rounded border border-4 border-[#645fc6] p-2"
           value={form.dueDate}
           onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block mb-1">Priority</label>
+        <Label className="block mb-1">Priority</Label>
         <select
-          className="w-full border p-2 rounded"
+         className="w-full rounded border border-4 border-[#645fc6] p-2"
           value={form.priority}
           onChange={(e) =>
             setForm({ ...form, priority: e.target.value as "Low" | "Medium" | "High" })
@@ -97,9 +122,9 @@ export default function CreateTaskForm() {
       </div>
 
       <div>
-        <label className="block mb-1">Category</label>
+        <Label className="block mb-1">Category</Label>
         <select
-          className="w-full border p-2 rounded"
+       className="w-full rounded border border-4 border-[#645fc6] p-2"
           value={form.category}
           onChange={(e) =>
             setForm({ ...form, category: e.target.value as "Work" | "Personal" | "Study" })
@@ -111,23 +136,31 @@ export default function CreateTaskForm() {
         </select>
       </div>
 
+       
+      <CardFooter className="flex gap-4 px-0">   
       <div className="flex gap-4">
-        <button
+        <Button
           type="submit"
           onClick={(e) => handleSubmit(e, false)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="text-white px-4 py-2 rounded"
         >
           Create Task & View All
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
           onClick={(e) => handleSubmit(e, true)}
           className="bg-green-600 text-white px-4 py-2 rounded"
         >
           Create Another Task
-        </button>
+        </Button>
       </div>
+      </CardFooter>
     </form>
+    </CardContent>
+    </Card>
+    </div>
+    </div>
+    
   );
 }

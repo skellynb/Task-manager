@@ -63,7 +63,16 @@ export function Sidebar() {
     `}
   />
 </button>
+<Link
+  href="/"
+  onClick={() => localStorage.removeItem("taskify_user")}
+  className="text-red-400 underline text-sm hover:text-red-300"
+>
+  Logout
+</Link>
+
 </div>
+
     </aside>
   );
 }
