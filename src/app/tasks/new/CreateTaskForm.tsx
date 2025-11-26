@@ -2,23 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-type Task = {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  dueDate: string;
-  priority: "Low" | "Medium" | "High";
-  category: "Work" | "Personal" | "Study";
-};
-
-type UserTasks = {
-  [username: string]: Task[];
-};
+import { Task } from "@/src/types/task";
+import { saveTaskToLocalStorage } from "@/src/lib/localStorage";
 
 export default function CreateTaskForm() {
   const router = useRouter();
+
   const currentUser =
     typeof window !== "undefined"
       ? localStorage.getItem("taskify_user") || "guest"
@@ -37,12 +26,7 @@ export default function CreateTaskForm() {
   function handleSubmit(e: React.FormEvent, stayOnForm = false) {
     e.preventDefault();
 
-    const stored = localStorage.getItem("tasks");
-    const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
-
-    const userTasks = allTasks[currentUser] || [];
-
-    const newTask: Task = {
+    const newTask: Task & { username: string } = {
       id: Date.now().toString(),
       title: form.title,
       description: form.description,
@@ -50,10 +34,11 @@ export default function CreateTaskForm() {
       dueDate: form.dueDate,
       priority: form.priority,
       category: form.category,
+      username: currentUser,
     };
 
-    allTasks[currentUser] = [...userTasks, newTask];
-    localStorage.setItem("tasks", JSON.stringify(allTasks));
+    // Save to localStorage via utility
+    saveTaskToLocalStorage(newTask);
 
     if (stayOnForm) {
       // Reset form to create another task
@@ -83,7 +68,7 @@ export default function CreateTaskForm() {
           className="w-full border p-2 rounded"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-        ></textarea>
+        />
       </div>
 
       <div>
@@ -137,7 +122,7 @@ export default function CreateTaskForm() {
 
         <button
           type="button"
-         onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSubmit(e, true)}
+          onClick={(e) => handleSubmit(e, true)}
           className="bg-green-600 text-white px-4 py-2 rounded"
         >
           Create Another Task

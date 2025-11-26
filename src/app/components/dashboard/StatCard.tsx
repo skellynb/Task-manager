@@ -11,7 +11,7 @@ export function StatCard({ title, value }: StatCardProps) {
     <Card className="w-full">
       <CardHeader className="px-0 flex flex-col items-center justify-center">
         <ClipboardList className="h-8 w-8" />
-        <CardTitle className="text-lg text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-2xl text-muted-foreground">{title}</CardTitle>
       </CardHeader>
 
       <CardContent>

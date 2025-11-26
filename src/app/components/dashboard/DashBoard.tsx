@@ -1,30 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "../layouts/SideBar";
 import { StatCard } from "../dashboard/StatCard";
+import { Task } from "@/src/types/task";
+import { getTasksFromLocalStorage } from "@/src/lib/localStorage";
+import { Headline } from "../typography";
+import Link from "next/link";
+import { Button } from "@/src/components/ui/buttons";
 
 export function DashboardClient() {
   const router = useRouter();
-  
-  // Initialize username from localStorage (only runs once on mount)
-  const [username] = useState(() => {
+
+  // Get username from localStorage
+  const [username] = useState<string>(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("taskify_user") || "";
     }
     return "";
   });
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!username) {
-      router.push("/login");
-    }
-  }, [username, router]);
+  // Load tasks for the current user
+  const [tasks] = useState<Task[]>(() => {
+    if (typeof window === "undefined" || !username) return [];
+    return getTasksFromLocalStorage(username);
+  });
 
-  // Don't render if no username
-  if (!username) {
+  // Redirect if not logged in
+  if (typeof window !== "undefined" && !username) {
+    router.push("/login");
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-lg">Redirecting...</p>
@@ -32,42 +37,39 @@ export function DashboardClient() {
     );
   }
 
-  // Example numbers — later replace with real task data
-  const totalTasks = 12;
-  const completedTasks = 5;
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(task => task.completed).length;
   const pendingTasks = totalTasks - completedTasks;
 
   return (
-    <div className="flex">
+    <div className="flex flex-col md:flex-row min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 p-10">
-        <h2 className="text-2xl font-semibold mb-6">
+      <main className="flex-1 p-6 md:p-10">
+        <Headline className="text-2xl font-semibold mb-6 text-white">
           Welcome, {username}!
-        </h2>
+        </Headline>
 
-        {/* STAT CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {/* Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
           <StatCard title="Total Tasks" value={totalTasks} />
           <StatCard title="Completed Tasks" value={completedTasks} />
           <StatCard title="Pending Tasks" value={pendingTasks} />
         </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="flex gap-4">
-          <a
-            href="/tasks"
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
-          >
-            View All Tasks
-          </a>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link href="/tasks" passHref>
+            <Button className="flex justify-center sm:justify-start w-full sm:w-auto">
+              View All Tasks
+            </Button>
+          </Link>
 
-          <a
-            href="/tasks/new"
-            className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:opacity-90 transition-opacity"
-          >
-            Create New Task
-          </a>
+          <Link href="/tasks/new" passHref>
+            <Button className="flex justify-center sm:justify-start w-full sm:w-auto">
+              Create New Task
+            </Button>
+          </Link>
         </div>
       </main>
     </div>
