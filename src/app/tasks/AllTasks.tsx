@@ -13,12 +13,19 @@ type Task = {
   category: "Work" | "Personal" | "Study";
 };
 
+type UserTasks = {
+  [username: string]: Task[];
+};
+
 export default function AllTasks() {
-  // Load tasks once
+  const currentUser = typeof window !== "undefined" ? localStorage.getItem("taskify_user") || "guest" : "guest";
+
+  // Load current user's tasks only
   const [tasks, setTasks] = useState<Task[]>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("tasks");
-      return stored ? (JSON.parse(stored) as Task[]) : [];
+      const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
+      return allTasks[currentUser] || [];
     }
     return [];
   });
@@ -29,18 +36,25 @@ export default function AllTasks() {
   const [categoryFilter, setCategoryFilter] = useState<"All" | "Work" | "Personal" | "Study">("All");
   const [search, setSearch] = useState("");
 
+  // Save tasks for current user
+  function saveTasks(updatedTasks: Task[]) {
+    const stored = localStorage.getItem("tasks");
+    const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
+    allTasks[currentUser] = updatedTasks;
+    localStorage.setItem("tasks", JSON.stringify(allTasks));
+    setTasks(updatedTasks);
+  }
+
   function handleDelete(id: string) {
     const updated = tasks.filter((t) => t.id !== id);
-    localStorage.setItem("tasks", JSON.stringify(updated));
-    setTasks(updated);
+    saveTasks(updated);
   }
 
   function toggleCompleted(id: string) {
     const updated = tasks.map((t) =>
       t.id === id ? { ...t, completed: !t.completed } : t
     );
-    localStorage.setItem("tasks", JSON.stringify(updated));
-    setTasks(updated);
+    saveTasks(updated);
   }
 
   // Apply filters & search
@@ -123,18 +137,14 @@ export default function AllTasks() {
                   onChange={() => toggleCompleted(task.id)}
                 />
                 <span
-                  className={`font-semibold ${
-                    task.completed ? "line-through text-gray-400" : ""
-                  }`}
+                  className={`font-semibold ${task.completed ? "line-through text-gray-400" : ""}`}
                 >
                   {task.title}
                 </span>
               </label>
 
               <span
-                className={`text-sm ${
-                  task.completed ? "line-through text-gray-400" : "text-gray-600"
-                }`}
+                className={`text-sm ${task.completed ? "line-through text-gray-400" : "text-gray-600"}`}
               >
                 {task.description}
               </span>

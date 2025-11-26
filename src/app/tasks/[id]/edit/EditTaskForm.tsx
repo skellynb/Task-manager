@@ -13,13 +13,20 @@ type Task = {
   category: "Work" | "Personal" | "Study";
 };
 
+type UserTasks = {
+  [username: string]: Task[];
+};
+
 export default function EditTaskForm({ taskId }: { taskId: string }) {
   const router = useRouter();
+  const currentUser = typeof window !== "undefined" ? localStorage.getItem("taskify_user") || "guest" : "guest";
 
+  // Load user tasks
   const [form, setForm] = useState(() => {
     const stored = localStorage.getItem("tasks");
-    const tasks: Task[] = stored ? JSON.parse(stored) : [];
-    const task = tasks.find((t) => t.id === taskId);
+    const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
+    const userTasks = allTasks[currentUser] || [];
+    const task = userTasks.find((t) => t.id === taskId);
 
     return task
       ? {
@@ -42,15 +49,15 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
     e.preventDefault();
 
     const stored = localStorage.getItem("tasks");
-    if (!stored) return;
+    const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
+    const userTasks = allTasks[currentUser] || [];
 
-    const tasks: Task[] = JSON.parse(stored);
-
-    const updated = tasks.map((t) =>
+    const updatedTasks = userTasks.map((t) =>
       t.id === taskId ? { ...t, ...form } : t
     );
 
-    localStorage.setItem("tasks", JSON.stringify(updated));
+    allTasks[currentUser] = updatedTasks;
+    localStorage.setItem("tasks", JSON.stringify(allTasks));
 
     router.push("/tasks");
   }
@@ -92,10 +99,7 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
           className="w-full border p-2 rounded"
           value={form.priority}
           onChange={(e) =>
-            setForm({
-              ...form,
-              priority: e.target.value as "Low" | "Medium" | "High",
-            })
+            setForm({ ...form, priority: e.target.value as "Low" | "Medium" | "High" })
           }
         >
           <option value="Low">Low</option>
@@ -110,10 +114,7 @@ export default function EditTaskForm({ taskId }: { taskId: string }) {
           className="w-full border p-2 rounded"
           value={form.category}
           onChange={(e) =>
-            setForm({
-              ...form,
-              category: e.target.value as "Work" | "Personal" | "Study",
-            })
+            setForm({ ...form, category: e.target.value as "Work" | "Personal" | "Study" })
           }
         >
           <option value="Work">Work</option>

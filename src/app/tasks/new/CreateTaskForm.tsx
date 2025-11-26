@@ -13,22 +13,34 @@ type Task = {
   category: "Work" | "Personal" | "Study";
 };
 
+type UserTasks = {
+  [username: string]: Task[];
+};
+
 export default function CreateTaskForm() {
   const router = useRouter();
+  const currentUser =
+    typeof window !== "undefined"
+      ? localStorage.getItem("taskify_user") || "guest"
+      : "guest";
 
-  const [form, setForm] = useState({
+  const initialForm = {
     title: "",
     description: "",
     dueDate: "",
     priority: "Low" as "Low" | "Medium" | "High",
     category: "Work" as "Work" | "Personal" | "Study",
-  });
+  };
 
-  function handleSubmit(e: React.FormEvent) {
+  const [form, setForm] = useState(initialForm);
+
+  function handleSubmit(e: React.FormEvent, stayOnForm = false) {
     e.preventDefault();
 
     const stored = localStorage.getItem("tasks");
-    const tasks: Task[] = stored ? JSON.parse(stored) : [];
+    const allTasks: UserTasks = stored ? JSON.parse(stored) : {};
+
+    const userTasks = allTasks[currentUser] || [];
 
     const newTask: Task = {
       id: Date.now().toString(),
@@ -40,13 +52,20 @@ export default function CreateTaskForm() {
       category: form.category,
     };
 
-    const updated = [...tasks, newTask];
-    localStorage.setItem("tasks", JSON.stringify(updated));
-    router.push("/tasks");
+    allTasks[currentUser] = [...userTasks, newTask];
+    localStorage.setItem("tasks", JSON.stringify(allTasks));
+
+    if (stayOnForm) {
+      // Reset form to create another task
+      setForm(initialForm);
+    } else {
+      // Redirect to All Tasks
+      router.push("/tasks");
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+    <form className="space-y-4 max-w-md">
       <div>
         <label className="block mb-1">Task Title</label>
         <input
@@ -107,12 +126,23 @@ export default function CreateTaskForm() {
         </select>
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Create Task
-      </button>
+      <div className="flex gap-4">
+        <button
+          type="submit"
+          onClick={(e) => handleSubmit(e, false)}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Create Task & View All
+        </button>
+
+        <button
+          type="button"
+         onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSubmit(e, true)}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Create Another Task
+        </button>
+      </div>
     </form>
   );
 }
