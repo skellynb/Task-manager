@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Subheading1, Headline, Body2, Label,} from "../typography";
-import ListChecks from "../../design-system/components/icons/ListChecks";
+import { ListChecks } from "../../design-system/components/icons";
 import Image from "next/image";
 import { Button } from "@/src/components/ui/buttons";
 import Link from "next/link";
+import { usersDB } from "../../data/user";
+
 
 export default function LoginPage() {
 const [username, setUsername] = useState("");
@@ -14,13 +16,30 @@ const [password, setPassword] = useState("");
 const router = useRouter();
 
 const handleLogin = () => {
-if (!username.trim()) {
-alert("Enter a valid username");
-return;
-}
-localStorage.setItem("taskify_user", username);
-router.push("/dashboard");
+  if (!username.trim() || !password.trim()) {
+    alert("Enter a valid username and password");
+    return;
+  }
+
+  // Check if user exists in the small JSON DB
+  const user = usersDB[username];
+
+  if (!user) {
+    alert("User does not exist");
+    return;
+  }
+
+  if (user.password !== password) {
+    alert("Incorrect password");
+    return;
+  }
+
+  // Save logged-in user
+  localStorage.setItem("taskify_user", username);
+
+  router.push("/dashboard");
 };
+
 
 return (
 <div className="flex items-center justify-center h-screen bg-gray-900 px-4">
